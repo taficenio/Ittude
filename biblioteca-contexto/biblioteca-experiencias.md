@@ -121,6 +121,7 @@ Responsibilities:
 - Set and delivered against OKRs for cross-functional AI delivery alignment (Key Results: sprint predictability, backlog throughput, model performance), running sprint planning and backlog prioritization across a distributed engineering and data team.
 - Led AI-driven product discovery for the learner support chatbot: combined student and educator interviews with rapid AI-powered prototyping, testing conversational flows and prompt variations directly with users before committing engineering capacity.
 - Deployed AI agents to automate requirements gathering from stakeholder call transcripts, translating raw discussion into structured user stories and acceptance criteria directly in Jira — reducing manual documentation time and accelerating backlog readiness.
+- Used Kiro to prototype the design of a content creator panel, putting a working prototype in front of content creators to validate direction with real feedback before committing engineering time — reducing downstream code adjustments by validating the approach upfront. [Confirmado por el usuario 2026-08-12]
 Achievements:
 - Optimized AI-driven learning algorithm: 20% improvement in personalized learning recommendations and increased student engagement.
 - Streamlined agile release process: coordinated 5 major platform updates, reducing time-to-market by 30%.
@@ -349,6 +350,7 @@ Work Philosophy: Purpose-driven work — impact in emerging industries that impr
 - **Process Excellence:** Diploma en Lean & Six Sigma Black Belt (UTN, 2011).
 - **Frameworks de priorización:** WSJF, Kano Model, RICE, MoSCoW, Jobs-to-be-Done (JTBD).
 - **Stack de IA y automatización (confirmado 2026-08-11):** OpenAI (GPT), Anthropic (Claude), n8n, Lovable, Bolt, LangChain, Pinecone. Usado para agentes de IA en producción (automatización de requerimientos desde transcripciones de calls en Amplifire; notificación automática de órdenes de trabajo en UCG).
+- **Kiro (confirmado 2026-08-12):** usado en Amplifire para prototipar el diseño de un panel de content creator, validando la dirección con feedback real de content creators antes de invertir tiempo de ingeniería en la construcción — redujo ajustes de código posteriores al validar el enfoque de antemano.
 - **Analytics adicional (confirmado 2026-08-11):** Amplitude, Mixpanel, Google Analytics, SQL, Power BI.
 - **Product & Delivery tools adicionales (confirmado 2026-08-11):** Jira (incluido en Amplifire, no solo roles anteriores a 2016), Confluence, Figma, Miro, Notion.
 - **OKRs (confirmado 2026-08-11):** definidos y trackeados en Amplifire (Key Results: sprint predictability, backlog throughput, model performance) y UCG (Key Results: user adoption rate, feature delivery efficiency) — previamente solo teníamos KPIs documentados, no OKRs específicamente.
