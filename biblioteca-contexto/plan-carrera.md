@@ -18,7 +18,7 @@ Product Management en sentido amplio — no específicamente "AI Product Manager
 
 ## Modalidad (Remoto / Híbrido / Presencial)
 
-Remoto preferido.
+**Remoto excluyente — [ACTUALIZADO 2026-08-12].** No considerar roles híbridos ni presenciales, aunque el resto del fit sea fuerte. Esto es un filtro duro, no una preferencia blanda: en `/evaluar-oferta`, `/puntuar-oferta`, y el briefing matutino, cualquier rol que requiera presencia física regular (incluso 1-2 días/semana) debe marcarse como descarte o flag fuerte, no simplemente puntuar más bajo.
 
 ## Mercado Objetivo
 
@@ -53,7 +53,7 @@ El único rol que aceptarías mañana si te lo ofrecieran. Esto ancla el sistema
 **Rol:** Product Manager / Product Owner.
 **Objetivo de compensación:** [PENDIENTE — falta definir un rango. Se puede completar con `/investigar-salario` una vez que haya una oferta o industria concreta sobre la cual anclar el research.]
 **Por qué este específicamente:** Prioriza una organización que permita una proyección de desarrollo profesional a largo plazo — no un rol de corto plazo.
-**Qué te haría decir que no:** Un rol de plazo muy corto y con mucha presión — sin espacio para desarrollo a largo plazo.
+**Qué te haría decir que no:** Un rol de plazo muy corto y con mucha presión — sin espacio para desarrollo a largo plazo. También cualquier rol híbrido o presencial, sin importar cuán fuerte sea el resto del fit (ver Modalidad arriba).
 
 ---
 
