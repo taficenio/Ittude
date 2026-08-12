@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscador de Ofertas ITtude — Guía de Uso</title>
+<style>
+:root {
+  --purple: #4600FF;
+  --purple-light: #6030ff;
+  --green: #6CEA18;
+  --gray: #414042;
+  --bg: #0d0d10;
+  --surface: #16161b;
+  --surface2: #1e1e25;
+  --surface3: #26262f;
+  --border: #2a2a35;
+  --text: #e4e4ec;
+  --muted: #7a7a88;
+  --dim: #555560;
+  --sw: 260px;
+  --r: 10px;
+  --rs: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── LAYOUT ── */
+.layout { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; width: var(--sw); height: 100vh;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow-y: auto; z-index: 100;
+  transition: transform .3s ease;
+}
+.sb-logo { padding: 22px 20px 18px; border-bottom: 1px solid var(--border); }
+.sb-badge { display: flex; align-items: center; gap: 8px; }
+.sb-dot { width: 9px; height: 9px; background: var(--green); border-radius: 50%; box-shadow: 0 0 7px var(--green); flex-shrink: 0; animation: blink 2.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+.sb-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.sb-title { margin-top: 6px; font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.35; }
+.sb-nav { flex: 1; padding: 10px 0; overflow-y: auto; }
+.nav-group { padding: 14px 20px 4px; font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.nav-a {
+  display: flex; align-items: center; gap: 9px; padding: 7px 20px;
+  font-size: 12.5px; color: var(--muted); text-decoration: none;
+  border-left: 2px solid transparent; transition: all .15s; cursor: pointer;
+}
+.nav-a:hover { color: var(--text); background: var(--surface2); border-left-color: var(--border); }
+.nav-a.active { color: #8870ff; background: rgba(70,0,255,.08); border-left-color: var(--purple); font-weight: 600; }
+.nav-num {
+  width: 17px; height: 17px; background: var(--surface3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9.5px; font-weight: 700; color: var(--muted); flex-shrink: 0;
+}
+.nav-a.active .nav-num { background: var(--purple); color: #fff; }
+.sb-foot { padding: 14px 20px; border-top: 1px solid var(--border); font-size: 10.5px; color: var(--dim); }
+
+/* ── TOPBAR (mobile) ── */
+.topbar {
+  display: none; position: fixed; top: 0; left: 0; right: 0; height: 54px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 16px; align-items: center; justify-content: space-between; z-index: 200;
+}
+.topbar-t { font-size: 13px; font-weight: 700; }
+.hbg { background: none; border: none; cursor: pointer; padding: 8px; color: var(--text); display: flex; flex-direction: column; gap: 4px; }
+.hbg span { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 90; }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sw); flex: 1; min-width: 0; }
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 52px 48px; border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(70,0,255,.07) 0%, rgba(108,234,24,.03) 100%);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; right: -80px; width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(70,0,255,.13) 0%, transparent 70%); pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(108,234,24,.09); border: 1px solid rgba(108,234,24,.22);
+  color: var(--green); padding: 4px 12px; border-radius: 100px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 20px;
+}
+.hero h1 { font-size: 42px; font-weight: 800; line-height: 1.12; letter-spacing: -.025em; margin-bottom: 16px; }
+.h-purple { color: #7055ff; }
+.h-green { color: var(--green); }
+.hero-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 36px; }
+.stats { display: flex; gap: 36px; flex-wrap: wrap; }
+.stat-n { font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #7055ff, var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stat-l { font-size: 11.5px; color: var(--dim); margin-top: 1px; }
+
+/* ── SECTION ── */
+.sec { padding: 52px; border-bottom: 1px solid var(--border); }
+.sec:last-child { border-bottom: none; }
+.sec-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 8px; }
+.sec h2 { font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 12px; }
+.sec-intro { font-size: 15px; color: var(--muted); max-width: 620px; line-height: 1.7; }
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
+.step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: border-color .2s; }
+.step-card:hover { border-color: rgba(70,0,255,.3); }
+.step-h { display: flex; align-items: center; gap: 16px; padding: 18px 22px; cursor: pointer; user-select: none; }
+.step-n {
+  width: 34px; height: 34px; background: linear-gradient(135deg, var(--purple), #3200cc);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(70,0,255,.35);
+}
+.step-info { flex: 1; }
+.step-title { font-size: 14.5px; font-weight: 600; margin-bottom: 2px; }
+.step-sub { font-size: 11.5px; color: var(--muted); }
+.chev { color: var(--dim); transition: transform .2s; flex-shrink: 0; }
+.step-card.open .chev { transform: rotate(180deg); }
+.step-body { display: none; padding: 0 22px 22px; border-top: 1px solid var(--border); }
+.step-card.open .step-body { display: block; }
+.step-body p { color: var(--muted); font-size: 13.5px; line-height: 1.7; margin-top: 14px; }
+.step-body p strong { color: var(--text); }
+.step-body ul { margin: 8px 0 14px 18px; color: var(--muted); font-size: 13px; line-height: 1.85; }
+.step-body ul li strong { color: var(--text); }
+
+/* ── CODE BLOCK ── */
+.cb {
+  background: #09090d; border: 1px solid var(--border); border-radius: var(--rs);
+  padding: 13px 15px; font-family: 'SF Mono','Fira Code','Roboto Mono',monospace; font-size: 12.5px;
+  color: var(--green); position: relative; margin: 12px 0; overflow-x: auto;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+}
+.cb::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--purple); border-radius:3px 0 0 3px; }
+.cb-t { flex: 1; word-break: break-all; white-space: pre-wrap; }
+.cp {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+  padding: 3px 9px; font-size: 10px; color: var(--muted); cursor: pointer;
+  flex-shrink: 0; transition: all .15s; font-family: inherit; white-space: nowrap;
+}
+.cp:hover { background: var(--surface3); color: var(--text); }
+.cp.done { color: var(--green); border-color: rgba(108,234,24,.4); }
+
+/* ── CALLOUT ── */
+.callout {
+  background: rgba(70,0,255,.07); border: 1px solid rgba(70,0,255,.18);
+  border-radius: var(--rs); padding: 13px 15px; margin: 14px 0; font-size: 13px; color: var(--muted); line-height: 1.65;
+}
+.callout.g { background: rgba(108,234,24,.06); border-color: rgba(108,234,24,.2); }
+.callout.w { background: rgba(255,165,0,.06); border-color: rgba(255,165,0,.2); color: #ffb940; }
+.callout strong { color: var(--text); }
+
+/* ── SKILL GRID ── */
+.sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 11px; margin-top: 28px; }
+.sk-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 17px 19px; transition: all .2s; position: relative; overflow: hidden;
+}
+.sk-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--purple),var(--green)); opacity:0; transition:opacity .2s; }
+.sk-card:hover { border-color: rgba(70,0,255,.3); background: var(--surface2); transform: translateY(-1px); }
+.sk-card:hover::after { opacity: 1; }
+.sk-cmd { font-family: 'SF Mono','Fira Code',monospace; font-size: 11.5px; color: var(--green); background: rgba(108,234,24,.08); border: 1px solid rgba(108,234,24,.15); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 7px; }
+.sk-name { font-size: 13.5px; font-weight: 700; margin-bottom: 6px; }
+.sk-desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+/* ── DETAIL ── */
+.det { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+.det:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.det-cmd { font-family: 'SF Mono','Fira Code',monospace; font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 14px; display: block; }
+.det h3 { font-size: 17px; font-weight: 700; margin-bottom: 14px; }
+.det p { color: var(--muted); font-size: 13.5px; line-height: 1.7; margin-bottom: 12px; }
+.det p strong { color: var(--text); }
+.det ul { margin: 6px 0 14px 18px; color: var(--muted); font-size: 13px; line-height: 1.85; }
+.det ul li strong { color: var(--text); }
+
+/* ── SUB-AGENTES ── */
+.sa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; margin-top: 22px; }
+.sa-card { background: var(--surface); border: 1px solid rgba(70,0,255,.2); border-radius: var(--rs); padding: 14px 16px; transition: all .2s; }
+.sa-card:hover { border-color: rgba(70,0,255,.4); background: var(--surface2); }
+.sa-cmd { font-family: 'SF Mono','Fira Code',monospace; font-size: 11px; color: #8870ff; margin-bottom: 7px; }
+.sa-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ── TIPS ── */
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; margin-top: 28px; }
+.tip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+.tip-ico { font-size: 22px; margin-bottom: 10px; }
+.tip-t { font-size: 13.5px; font-weight: 700; margin-bottom: 7px; }
+.tip-d { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+/* ── MISTAKES ── */
+.mlist { display: flex; flex-direction: column; gap: 9px; margin-top: 24px; }
+.mi { display: flex; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--rs); padding: 14px 16px; align-items: flex-start; }
+.mi-x { color: #ff4444; font-weight: 800; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.mi-t { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+.mi-t strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 14px; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 7px; margin-top: 28px; }
+.faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rs); overflow: hidden; }
+.faq-q { padding: 15px 20px; font-size: 13.5px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: background .15s; user-select: none; }
+.faq-q:hover { background: var(--surface2); }
+.faq-ico { color: var(--dim); transition: transform .2s; flex-shrink: 0; }
+.faq-item.open .faq-ico { transform: rotate(180deg); }
+.faq-a { display: none; padding: 14px 20px 16px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--border); line-height: 1.7; }
+.faq-a code { font-family: 'SF Mono','Fira Code',monospace; font-size: 11.5px; color: var(--green); background: rgba(108,234,24,.08); padding: 1px 5px; border-radius: 3px; }
+.faq-item.open .faq-a { display: block; }
+
+/* ── BRIEFING LIST ── */
+.blist { margin: 12px 0 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.blist li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--muted); }
+.blist li::before { content: '→'; color: var(--purple-light); flex-shrink: 0; font-weight: 700; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .topbar { display: flex; }
+  .overlay.on { display: block; }
+  .hero { padding: calc(54px + 40px) 28px 36px; }
+  .sec { padding: 36px 28px; }
+}
+@media (max-width: 640px) {
+  .hero h1 { font-size: 30px; }
+  .stats { gap: 20px; }
+  .stat-n { font-size: 22px; }
+  .sec h2 { font-size: 22px; }
+  .hero { padding: calc(54px + 28px) 18px 28px; }
+  .sec { padding: 28px 18px; }
+  .sk-grid { grid-template-columns: 1fr; }
+  .tips-grid { grid-template-columns: 1fr; }
+  .sa-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 380px) {
+  .sa-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile topbar -->
+<header class="topbar">
+  <span class="topbar-t">Buscador de Ofertas ITtude</span>
+  <button class="hbg" id="menuBtn" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-badge"><div class="sb-dot"></div><span class="sb-label">ITtude</span></div>
+      <div class="sb-title">Buscador de Ofertas<br>v1.0 — Guía de Uso</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-group">Inicio</div>
+      <a class="nav-a active" href="#inicio">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Bienvenida
+      </a>
+      <div class="nav-group">Configuración</div>
+      <a class="nav-a" href="#paso-1"><span class="nav-num">1</span>Iniciar Claude Code</a>
+      <a class="nav-a" href="#paso-2"><span class="nav-num">2</span>Prueba inmediata</a>
+      <a class="nav-a" href="#paso-3"><span class="nav-num">3</span>Explorar el OS</a>
+      <a class="nav-a" href="#paso-4"><span class="nav-num">4</span>Biblioteca de experiencias</a>
+      <a class="nav-a" href="#paso-5"><span class="nav-num">5</span>QA Master</a>
+      <a class="nav-a" href="#paso-6"><span class="nav-num">6</span>Plan de carrera</a>
+      <a class="nav-a" href="#paso-7"><span class="nav-num">7</span>Empresas objetivo</a>
+      <a class="nav-a" href="#paso-8"><span class="nav-num">8</span>Sync con GitHub</a>
+      <a class="nav-a" href="#paso-9"><span class="nav-num">9</span>Desde el celular</a>
+      <a class="nav-a" href="#paso-10"><span class="nav-num">10</span>Briefing matutino</a>
+      <a class="nav-a" href="#paso-11"><span class="nav-num">11</span>Grabación de entrevistas</a>
+      <a class="nav-a" href="#paso-12"><span class="nav-num">12</span>Primer briefing</a>
+      <div class="nav-group">Usando el OS</div>
+      <a class="nav-a" href="#briefing">Briefing Matutino</a>
+      <a class="nav-a" href="#skills-det">Skills Principales</a>
+      <a class="nav-a" href="#todos">Todos los Skills</a>
+      <a class="nav-a" href="#subagentes">Sub-Agentes</a>
+      <div class="nav-group">Referencia</div>
+      <a class="nav-a" href="#consejos">Consejos Pro</a>
+      <a class="nav-a" href="#errores">Errores Comunes</a>
+      <a class="nav-a" href="#faq">FAQ</a>
+    </nav>
+    <div class="sb-foot">© 2025 ITtude · ittude-agile.com</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+      <div class="hero-badge">✦ v1.0 — Guía de Uso</div>
+      <h1><span class="h-purple">Buscador de Ofertas</span><br><span class="h-green">ITtude</span></h1>
+      <p class="hero-sub">Tu sistema operativo de búsqueda laboral. 20–30 minutos por día. Cada postulación personalizada. Sin envíos masivos genéricos.</p>
+      <div class="stats">
+        <div><div class="stat-n">18</div><div class="stat-l">Skills disponibles</div></div>
+        <div><div class="stat-n">4</div><div class="stat-l">Sub-agentes revisores</div></div>
+        <div><div class="stat-n">100+</div><div class="stat-l">Empresas con intel insider</div></div>
+        <div><div class="stat-n">5×</div><div class="stat-l">Más efectivo con referidos</div></div>
+      </div>
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section class="sec" id="configuracion">
+      <div class="sec-tag">Parte 1</div>
+      <h2>Configuración Inicial</h2>
+      <p class="sec-intro">12 pasos para tener el OS completamente operativo. Los primeros 3 toman menos de 5 minutos — empezá ahora mismo.</p>
+
+      <div class="steps">
+
+        <div class="step-card open" id="paso-1">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">1</div>
+            <div class="step-info"><div class="step-title">Iniciar Claude Code en el terminal</div><div class="step-sub">El punto de entrada de todo el sistema</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Abrí tu terminal, navegá a la carpeta del proyecto y ejecutá:</p>
+            <div class="cb"><span class="cb-t">claude</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Claude Code lee el CLAUDE.md automáticamente y carga el contexto del OS.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-2">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">2</div>
+            <div class="step-info"><div class="step-title">Prueba inmediata — sin setup</div><div class="step-sub">Pegá cualquier oferta ahora mismo</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Antes de configurar nada, pegá cualquier oferta:</p>
+            <div class="cb"><span class="cb-t">/evaluar-oferta [pegar la oferta aquí]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>En 60 segundos sabés: ¿hay red flags en el lenguaje? ¿Cuánto paga realmente? ¿Es una oportunidad real o un ghost posting? <strong>Sin setup requerido.</strong></p>
+            <div class="callout g">✓ Este es el único skill que funciona sin ningún contexto cargado. Es tu primera muestra de lo que el sistema completo hace una vez que tu contexto está configurado.</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-3">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">3</div>
+            <div class="step-info"><div class="step-title">Explorar el OS</div><div class="step-sub">Entendé qué hay disponible antes de configurar</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Escribí esto en el terminal:</p>
+            <div class="cb"><span class="cb-t">Leer CLAUDE.md y resumir qué hace este Buscador de Ofertas ITtude</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Claude lee el archivo maestro y te dice qué contiene cada carpeta, qué skills están disponibles y qué contexto necesita de vos.</p>
+            <div class="callout">📁 <strong>Estructura clave:</strong> <code style="color:var(--green);font-family:monospace;font-size:12px">biblioteca-contexto/</code> para tus datos · <code style="color:var(--green);font-family:monospace;font-size:12px">datos-insider/</code> para intel de entrevistas · <code style="color:var(--green);font-family:monospace;font-size:12px">configuracion/</code> para guías detalladas</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-4">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">4</div>
+            <div class="step-info"><div class="step-title">Construir tu biblioteca de experiencias</div><div class="step-sub">Los 10 minutos que hacen que todo lo demás funcione</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <div class="cb"><span class="cb-t">Ayudame a construir mi biblioteca de experiencias</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Pegá tu CV <strong>y</strong> tu perfil de LinkedIn. Claude combina ambas fuentes, elimina duplicados y organiza cada bullet por categoría de skill. Después te pregunta sobre proyectos que ninguna fuente captura.</p>
+            <div class="callout w">⚠ LinkedIn a veces bloquea el acceso automatizado. Asegurate de subir también tu CV como respaldo.</div>
+            <p>También podés dictar tu historial en lugar de tipear. 5 minutos hablando produce una biblioteca más rica que una hora escribiendo.</p>
+            <div class="callout">💡 <strong>Si este archivo está incompleto, todo lo que produce el OS será genérico. Si está rico, todo será quirúrgico.</strong> Estos son los 10 minutos más importantes del setup.</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-5">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">5</div>
+            <div class="step-info"><div class="step-title">Completar tu QA Master</div><div class="step-sub">Respondés una vez, el OS lo usa en todas las postulaciones</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <div class="cb"><span class="cb-t">Ayudame a completar mi qa-master</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Claude te guía por cada pregunta común de postulación: expectativa salarial, visa, reubicación, por qué te vas, mayor debilidad, mayor fracaso, fecha de inicio. Respondés una vez. El OS lo usa en cada postulación y mock interview.</p>
+            <p>Para preguntas de compensación, Claude te ayuda a redactar la estrategia de deflexión: cómo evitar compartir tu sueldo actual, cómo devolver la pregunta, qué rango compartir si te presionan y qué datos citar.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-6">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">6</div>
+            <div class="step-info"><div class="step-title">Definir tu plan de carrera</div><div class="step-sub">El análisis de debilidades que orienta todo el sistema</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <div class="cb"><span class="cb-t">Ayudame a completar mi plan de carrera</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Tres preguntas: qué nivel querés (IC vs manager, qué seniority), qué industria, qué tipo de rol.</p>
+            <p>Después la parte más importante: el <strong>análisis de direccionamiento de debilidades</strong>. Claude mira tu biblioteca de experiencias y la compara con JDs típicos para tus roles objetivo. Identifica los 2–3 gaps más grandes que un entrevistador va a ver. Estas debilidades orientan todo en el OS: cómo se estructura tu "contame sobre vos", qué historias el mock presiona, qué gaps del CV se señalan.</p>
+            <div class="callout">💡 Al final, escribí 2–3 oraciones describiendo tus empresas objetivo ideales. El OS usa esto en el siguiente paso.</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-7">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">7</div>
+            <div class="step-info"><div class="step-title">Generar tu lista de empresas objetivo</div><div class="step-sub">~100 targets rankeados con research incluido</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <div class="cb"><span class="cb-t">/investigar-empresa generar lista de targets</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Claude lee tu plan de carrera, busca empresas que coincidan con tus criterios y genera ~100 entradas. Cada una tiene: nombre, headcount estimado para tu rol, foco de producto, noticias recientes y conexiones que ya tenés.</p>
+            <div class="callout w">⚠ Tomá 15 minutos para ajustar el ranking. Esta lista orienta el scanner del briefing, el round-robin de conexiones y el rastreador de referidos.</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-8">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">8</div>
+            <div class="step-info"><div class="step-title">Sincronizar con GitHub</div><div class="step-sub">Control de versiones + acceso desde el celular</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>En VS Code / Cursor, click en el ícono de ramas del explorador. Andá a github.com, creá un nuevo repositorio privado y copiá los comandos de setup en tu terminal.</p>
+            <p>Esto te da control de versiones (revertí si rompés algo) y desbloquea el acceso desde el celular en el siguiente paso.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-9">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">9</div>
+            <div class="step-info"><div class="step-title">Usar Claude Code desde el celular</div><div class="step-sub">Cualquier skill desde iOS o Android</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Una vez sincronizado con GitHub, abrí la app de Claude en iOS o Android, iniciá una sesión de Claude Code y se conecta a tu repo.</p>
+            <p>Ejecutá <code style="color:var(--green);font-family:monospace;font-size:12px">/preparar-entrevista</code> en el tren. Revisá <code style="color:var(--green);font-family:monospace;font-size:12px">/rastrear-postulaciones</code> desde la cama. Iniciá tu briefing antes de llegar al escritorio.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-10">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">10</div>
+            <div class="step-info"><div class="step-title">Configurar el briefing matutino</div><div class="step-sub">El OS te despierta con tu plan del día listo</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>El OS incluye instrucciones exactas para configurar el briefing diario en Cowork. Abrí:</p>
+            <div class="cb"><span class="cb-t">tareas-cowork/daily-morning-briefing.md</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+            <p>Conectá también Google Calendar para que el OS lea con quién te reuniste y mantenga tu rastreador de conexiones actualizado.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-11">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">11</div>
+            <div class="step-info"><div class="step-title">Configurar grabación de entrevistas</div><div class="step-sub">Transcripción automática para el debrief</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Configurá <strong>Granola</strong> (granola.ai) para transcripción automática de reuniones. Una vez configurado, el OS observa esa carpeta — después de cada entrevista, el skill de debrief se activa sobre la transcripción automáticamente.</p>
+          </div>
+        </div>
+
+        <div class="step-card" id="paso-12">
+          <div class="step-h" onclick="toggleStep(this)">
+            <div class="step-n">12</div>
+            <div class="step-info"><div class="step-title">Ejecutar tu primer briefing</div><div class="step-sub">Verificá la calidad antes de confiar en la automatización</div></div>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-body">
+            <p>Antes de confiar en la automatización, ejecutalo una vez manualmente. Revisá: ¿los roles son relevantes? ¿Los CVs adaptados son de buena calidad? ¿El networking to-do está tomando las personas correctas?</p>
+            <p>Si algo se siente mal, ajustá tus archivos de contexto y ejecutá de nuevo. Después de 2–3 buenas corridas, confiá en el schedule — corre automáticamente cada mañana de lunes a viernes.</p>
+            <div class="callout g">✓ Setup completo. A partir de acá, el OS hace el trabajo pesado. Vos te enfocás en criterio, conversaciones y trabajos muestra.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- USANDO EL OS -->
+    <section class="sec" id="usando">
+      <div class="sec-tag">Parte 2</div>
+      <h2>Usando el OS</h2>
+      <p class="sec-intro">Cómo funciona el sistema en el día a día, skill por skill.</p>
+
+      <!-- BRIEFING MATUTINO -->
+      <div class="det" id="briefing" style="margin-top:36px">
+        <h3>☀️ El Briefing Matutino</h3>
+        <p>Lo que encontrás cada mañana de lunes a viernes. El briefing abre con una nota de coaching: en qué semana de búsqueda estás, tus stats de pipeline y dónde enfocarte hoy.</p>
+        <p>Abajo: tus roles top rankeados con CVs ya adaptados y revisados. Y tu outreach del día: solicitudes de conexión, follow-ups y borradores de referidos, todos personalizados y listos para enviar.</p>
+        <p><strong>Qué hacés (20–30 minutos en total):</strong></p>
+        <ul>
+          <li><strong>Revisá los CVs top.</strong> 3 minutos cada uno. El OS ya corrió el scanner de reclutador y el check de ATS. Si encontró problemas, los corrigió antes de que veas la versión final.</li>
+          <li><strong>Enviá las postulaciones.</strong></li>
+          <li><strong>Copiá y pegá el outreach de LinkedIn.</strong> Los mensajes ya están personalizados. ~10 minutos.</li>
+          <li><strong>Enviá follow-ups y mensajes de referido.</strong> Ya redactados. Revisá y enviá.</li>
+          <li><strong>Para tu empresa top de hoy:</strong> construí el trabajo muestra y prototipo. 30–45 minutos.</li>
+        </ul>
+      </div>
+
+      <!-- SKILLS DETALLE -->
+      <div id="skills-det">
+        <h3 style="font-size:19px;font-weight:800;margin-bottom:28px;margin-top:8px">Skills Principales</h3>
+
+        <div class="det">
+          <span class="det-cmd">/adaptar-cv</span>
+          <div class="cb"><span class="cb-t">/adaptar-cv [pegar la oferta]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p>Claude lee la oferta, lee tu biblioteca de experiencias, identifica matches de keywords y gaps, selecciona tus bullets más fuertes y los reescribe incorporando las keywords de la JD — manteniendo cada palabra factualmente verdadera.</p>
+          <p>No es keyword stuffing. Es un CV genuinamente diferente para cada rol: bullets distintos, orden distinto, summary distinto. Construido desde tu experiencia real, reestructurado para que el reclutador en 6 segundos vea exactamente lo que busca.</p>
+          <p>El output incluye un <strong>score de cobertura de keywords</strong> (% de requisitos cubiertos) y una sección de gaps con lenguaje específico para usar en la carta de presentación. Los sub-agentes de reclutador y ATS se activan automáticamente y auto-corrigen el CV antes de que veas la versión final.</p>
+        </div>
+
+        <div class="det">
+          <span class="det-cmd">/preparar-entrevista</span>
+          <div class="cb"><span class="cb-t">/preparar-entrevista [empresa + rol]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p>El OS viene con intel insider de 100+ empresas. Si tu target está en la base, tu prep está pre-cargada: formato de entrevista, preguntas por ronda, qué evalúan, datos de compensación.</p>
+          <p>El paquete incluye: preguntas probables por ronda (fuente: base insider vs web), background del entrevistador si proporcionás el nombre, noticias recientes y contexto de producto, 2–3 áreas sobre las que debés tener opiniones, y tu guión "contame sobre vos" personalizado para direccionar las debilidades que un entrevistador de esa empresa va a ver en tu CV.</p>
+        </div>
+
+        <div class="det">
+          <span class="det-cmd">/simular-entrevista</span>
+          <div class="cb"><span class="cb-t">/simular-entrevista behavioral</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p>Sesión interactiva. Claude juega de entrevistador. Respondé en voz alta usando dictado para la práctica más realista. Claude hace una pregunta a la vez. Respondés. Después califica usando <strong>Las Tres Leyes</strong>:</p>
+          <ul>
+            <li><strong>Estructura:</strong> ¿Estaba organizada la respuesta? ¿Señalaste a dónde ibas? ¿Te mantuviste bajo 2 minutos?</li>
+            <li><strong>Especificidad:</strong> ¿Usaste un ejemplo real con métricas reales?</li>
+            <li><strong>Demostración de Skill:</strong> ¿La respuesta probó el skill que la pregunta evaluaba?</li>
+          </ul>
+          <p>Después de cada respuesta: score, feedback específico sobre qué funcionó y qué no, y una versión reescrita usando tu biblioteca de experiencias real.</p>
+        </div>
+
+        <div class="det">
+          <span class="det-cmd">/debrief-entrevista</span>
+          <div class="cb"><span class="cb-t">/debrief-entrevista [transcripción]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p>Dropeá tu transcripción de Granola directamente. Cada pregunta se categoriza por tipo. Cada respuesta se puntúa. Para respuestas donde dejaste valor en la mesa, Claude escribe un reescrito específico usando tu experiencia real.</p>
+          <p>La sección de señales identifica qué presionó más el entrevistador. Si hicieron tres follow-ups sobre métricas pero pasaron rápido tus historias de liderazgo, eso te dice en qué se va a enfocar la próxima ronda. Tu historial de entrevistas se actualiza automáticamente con cada debrief.</p>
+        </div>
+
+        <div class="det">
+          <span class="det-cmd">/trabajo-muestra</span>
+          <div class="cb"><span class="cb-t">/trabajo-muestra [empresa + rol + tipo]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p><strong>Tres tipos — usá el correcto en el momento correcto:</strong></p>
+          <ul>
+            <li><strong>Para conseguir entrevista:</strong> envialo para ganar una entrevista que no tenés todavía. Tiempo: 1 hora.</li>
+            <li><strong>En proceso:</strong> compartilo durante el proceso para diferenciarte. Tiempo: 1.5 horas.</li>
+            <li><strong>Para entrevista específica:</strong> envialo después de fallar una pregunta para mostrar tu proceso real. Tiempo: 45 minutos.</li>
+          </ul>
+          <p>Claude primero investiga la empresa: earnings recientes, reseñas de producto, posts del equipo, quejas públicas. Estos se convierten en los hooks que hacen el 1-pager específico a esta empresa y no a ninguna otra.</p>
+          <div class="callout g">★ La combinación de 1-pager + prototipo es el movimiento de mayor leverage de todo el sistema. He visto esto conseguir empleos en empresas donde las postulaciones frías fallaron completamente.</div>
+        </div>
+
+        <div class="det">
+          <span class="det-cmd">/negociar</span>
+          <div class="cb"><span class="cb-t">/negociar [detalles de la oferta]</span><button class="cp" onclick="copy(this)">Copiar</button></div>
+          <p>Analiza la carta de oferta, identifica puntos de leverage, redacta lenguaje de contraoferta y te prepara para la llamada de negociación. Acá es donde el ROI del sistema se materializa.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODOS LOS SKILLS -->
+    <section class="sec" id="todos">
+      <div class="sec-tag">Referencia Completa</div>
+      <h2>Todos los Skills</h2>
+      <p class="sec-intro">Los 18 skills del sistema, cada uno diseñado para un momento específico de la búsqueda.</p>
+      <div class="sk-grid">
+        <div class="sk-card"><div class="sk-cmd">/evaluar-oferta</div><div class="sk-name">Evaluar Oferta</div><div class="sk-desc">En 60 segundos: red flags, estimación salarial, intel de entrevista, veredicto. Sin setup requerido.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/puntuar-oferta</div><div class="sk-name">Puntuar Oferta</div><div class="sk-desc">Score 0-100 en 5 dimensiones. Bajo 60: skip. 60-75: solo con referido. 75+: postulá ahora.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/adaptar-cv</div><div class="sk-name">Adaptar CV</div><div class="sk-desc">CV optimizado para ATS desde experiencia real, con score de cobertura y análisis de gaps.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/carta-presentacion</div><div class="sk-name">Carta de Presentación</div><div class="sk-desc">Top 3 experiencias mapeadas a los top 3 requisitos de la oferta. Menos de 300 palabras.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/investigar-empresa</div><div class="sk-name">Investigar Empresa</div><div class="sk-desc">Research profundo para informar postulaciones, trabajos muestra, prep de entrevista y outreach.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/solicitud-conexion</div><div class="sk-name">Solicitudes de Conexión</div><div class="sk-desc">25 solicitudes personalizadas en LinkedIn por día, en round-robin por empresas objetivo.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/pedir-referido</div><div class="sk-name">Pedir Referido</div><div class="sk-desc">Secuencia de 3 mensajes: consulta inicial, push fuerte e identificación del hiring manager.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/contactar-reclutador</div><div class="sk-name">Contactar Reclutador</div><div class="sk-desc">Mensaje al hiring manager que lidera con el trabajo muestra, no con el pedido.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/trabajo-muestra</div><div class="sk-name">Trabajo Muestra</div><div class="sk-desc">1-pager específico por empresa para conseguir entrevistas demostrando insight real.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/preparar-entrevista</div><div class="sk-name">Preparar Entrevista</div><div class="sk-desc">Intel insider, preguntas por ronda, historias mapeadas y "contame sobre vos" personalizado.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/simular-entrevista</div><div class="sk-name">Simular Entrevista</div><div class="sk-desc">Mock interactivo con calificación por Las Tres Leyes: estructura, especificidad y demostración.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/debrief-entrevista</div><div class="sk-name">Debrief de Entrevista</div><div class="sk-desc">Scores por pregunta, señales del entrevistador y predicción de próxima ronda.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/nota-agradecimiento</div><div class="sk-name">Nota de Agradecimiento</div><div class="sk-desc">Nota personalizada referenciando momentos específicos de la conversación. No un genérico.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/auditar-linkedin</div><div class="sk-name">Auditar LinkedIn</div><div class="sk-desc">Compara tu perfil con las JDs que targetás. Sugerencias antes/después para cada sección.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/rastrear-postulaciones</div><div class="sk-name">Rastrear Postulaciones</div><div class="sk-desc">Pipeline central: postulaciones, referidos, entrevistas, follow-ups y stats. Auto-actualizable.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/investigar-salario</div><div class="sk-name">Investigar Salario</div><div class="sk-desc">Datos de compensación de mercado (GetOnBoard, Glassdoor LATAM, LinkedIn) por empresa, rol y nivel.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/negociar</div><div class="sk-name">Negociar</div><div class="sk-desc">Análisis de oferta, identificación de leverage y lenguaje de contraoferta. El ROI más alto.</div></div>
+        <div class="sk-card"><div class="sk-cmd">/retro-semanal</div><div class="sk-name">Retro Semanal</div><div class="sk-desc">Postulaciones, tasa de callback, dónde está leakando el pipeline y qué ajustar la próxima semana.</div></div>
+      </div>
+    </section>
+
+    <!-- SUB-AGENTES -->
+    <section class="sec" id="subagentes">
+      <div class="sec-tag">Revisores Especializados</div>
+      <h2>Sub-Agentes</h2>
+      <p class="sec-intro">4 personas revisoras que fuerzan una revisión estructurada desde una lente específica. Detectan problemas que el pase de generación se pierde porque su prompt de revisión tiene prioridades distintas al de creación.</p>
+      <div class="sa-grid">
+        <div class="sa-card"><div class="sa-cmd">/revisar-como-reclutador [archivo]</div><div class="sa-desc">Escaneo de reclutador en 6 segundos. Primera impresión, relevancia en el tercio superior, legibilidad.</div></div>
+        <div class="sa-card"><div class="sa-cmd">/revisar-como-ats [archivo]</div><div class="sa-desc">Compatibilidad ATS: headers estándar, densidad de keywords, formatos de fecha, problemas de parseo.</div></div>
+        <div class="sa-card"><div class="sa-cmd">/revisar-como-hiring-manager [archivo]</div><div class="sa-desc">Perspectiva del HM sobre trabajos muestra. ¿Es específico a esta empresa o podría ser de cualquier candidato?</div></div>
+        <div class="sa-card"><div class="sa-cmd">/revisar-como-entrevistador [respuesta]</div><div class="sa-desc">Calificación por Las Tres Leyes sobre respuestas de entrevista: estructura, especificidad y demostración.</div></div>
+      </div>
+      <div class="callout" style="margin-top:18px">⚡ <strong>Automático:</strong> Después de <code style="color:var(--green);font-family:monospace;font-size:12px">/adaptar-cv</code>, los sub-agentes de reclutador y ATS se activan solos. Si encuentran problemas, el CV se auto-corrige antes de que veas la versión final.</div>
+    </section>
+
+    <!-- CONSEJOS -->
+    <section class="sec" id="consejos">
+      <div class="sec-tag">Parte 3</div>
+      <h2>Consejos Pro</h2>
+      <div class="tips-grid">
+        <div class="tip"><div class="tip-ico">🎙️</div><div class="tip-t">Usá dictado para la biblioteca</div><div class="tip-d">30 minutos hablando produce material más rico que una hora tipeando. Las métricas y el contexto fluyen más naturalmente en voz alta.</div></div>
+        <div class="tip"><div class="tip-ico">📊</div><div class="tip-t">Puntuá antes de adaptar</div><div class="tip-d">Ejecutá <code style="color:var(--green);font-family:monospace;font-size:11px">/puntuar-oferta</code> antes de invertir tiempo en <code style="color:var(--green);font-family:monospace;font-size:11px">/adaptar-cv</code>. No inviertas 15 minutos en un rol que puntúa 35.</div></div>
+        <div class="tip"><div class="tip-ico">🧹</div><div class="tip-t">/clear entre empresas</div><div class="tip-d">Cuando cambiás de una postulación a Stripe a una de Databricks, limpiá el contexto. La contaminación entre empresas es el fallo de calidad #1.</div></div>
+        <div class="tip"><div class="tip-ico">🎯</div><div class="tip-t">Empezá con briefing y adaptar-cv</div><div class="tip-d">Agregá el sistema de entrevistas cuando empieces a conseguirlas. No necesitás todo desde el día uno.</div></div>
+        <div class="tip"><div class="tip-ico">📓</div><div class="tip-t">Actualizá el rastreador de conexiones</div><div class="tip-d">Después de cada café o call. El briefing usa esas notas para generar follow-ups más inteligentes y solicitudes de referido más específicas.</div></div>
+        <div class="tip"><div class="tip-ico">⭐</div><div class="tip-t">Trabajo muestra + prototipo</div><div class="tip-d">La combinación de 1-pager y prototipo funcional es el movimiento de mayor leverage. Hacelo para tus 3 empresas top. Casi nadie envía ambos.</div></div>
+        <div class="tip"><div class="tip-ico">🔍</div><div class="tip-t">Tu análisis de debilidades orienta todo</div><div class="tip-d">Dedicá 15 minutos a hacerlo bien. Orienta tu "contame sobre vos", el posicionamiento del CV, el foco del mock y los paquetes de prep.</div></div>
+        <div class="tip"><div class="tip-ico">🌙</div><div class="tip-t">Mock la noche anterior</div><div class="tip-d">Ejecutá <code style="color:var(--green);font-family:monospace;font-size:11px">/simular-entrevista</code> la noche antes de cada entrevista real. Incluso 20 minutos en tu pregunta más débil hace diferencia.</div></div>
+      </div>
+    </section>
+
+    <!-- ERRORES COMUNES -->
+    <section class="sec" id="errores">
+      <div class="sec-tag">Qué evitar</div>
+      <h2>Errores Comunes</h2>
+      <div class="mlist">
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>Saltear la biblioteca de experiencias</strong>La razón más común por la que el OS no rinde. Sin ella, cada output es genérico.</div></div>
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>No revisar los CVs adaptados</strong>3 minutos de revisión detecta los errores silenciosos que convierten una tasa de callback del 15% en 4%.</div></div>
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>Ignorar el networking</strong>El OS mejora las postulaciones, pero los referidos siguen siendo 5× más efectivos que las postulaciones frías. No automatices alrededor de los pasos más importantes.</div></div>
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>No revisar el briefing los primeros días</strong>Supervisá antes de confiar. Verificá que los roles son relevantes y los CVs son de calidad.</div></div>
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>Trabajos muestra genéricos</strong>Si el 1-pager podría haberse escrito para cualquier empresa, va a perjudicarte más que ayudarte. Un HM me dijo: "Más trabajos muestra han sido señal negativa que positiva." Hacé el tuyo específico.</div></div>
+        <div class="mi"><div class="mi-x">✕</div><div class="mi-t"><strong>No actualizar a medida que avanza tu búsqueda</strong>Cuando aprendés algo en una entrevista, agregalo a tu biblioteca de experiencias. Cuando estrechás tu targeting, actualizá tu lista de empresas.</div></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sec" id="faq">
+      <div class="sec-tag">Respuestas</div>
+      <h2>Preguntas Frecuentes</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">¿Puedo usarlo sin Cowork?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Sí. Los 18 skills funcionan en Claude Code standalone. Perdés el briefing matutino automatizado, pero cada skill funciona de forma independiente. El sistema de entrevistas, el adaptador de CV, el generador de trabajos muestra y las herramientas de negociación funcionan todos sin Cowork.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">¿Qué modelo de Claude debería usar?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Haiku para operaciones masivas. Sonnet para la mayoría de los skills. Opus para revisiones de sub-agentes y prep de entrevista donde la profundidad importa.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">El output del CV es demasiado genérico. ¿Qué está mal?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Tu biblioteca de experiencias está demasiado floja. Volvé y agregá más bullets con métricas específicas. Agregá los proyectos que no están en tu CV ni en LinkedIn. Cuanto más rica la biblioteca, más quirúrgico será cada output.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">No soy PM. ¿Funciona para mí?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">El sistema está enfocado en roles de PM y PO. Si venís de otra función (ingeniería, diseño, consultoría, análisis, scrum u otras) y querés hacer la transición a PM, el OS activa el modo career-changer automáticamente: reencuadra tu experiencia sin inventar títulos, te prepara para las preguntas difíciles del cambio de carrera, y mapea tus skills previos a competencias PM concretas.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Estoy cambiando de carrera. ¿El sistema lo maneja?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Sí. El OS detecta transiciones de carrera desde tu biblioteca y plan de carrera, y activa el modo career-changer: reencuadre honesto del CV (sin títulos fabricados), coaching de entrevista para preguntas "¿por qué el cambio?", scoring ajustado para experiencia transferible.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Estoy fuera de Argentina o necesito visa. ¿Funciona?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Sí. El OS está optimizado para el mercado LATAM y roles remotos para equipos hispanohablantes. Para roles que requieren visa, marca empresas que patrocinan, ajusta el tono del outreach a normas locales y puede filtrar por historial de patrocinio. La investigación salarial incluye diferencias de moneda y mercado.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">¿Cómo funcionan las actualizaciones de datos insider?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">La base de datos intel se actualiza con lo que se aprende de nuevos miembros de cohortes y clientes de coaching. Recibís las actualizaciones haciendo pull de la última versión del repo. Los archivos de <code>biblioteca-contexto/</code> nunca se sobreescriben con las actualizaciones.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">El briefing matutino no corrió. ¿Qué hago?<svg class="faq-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="faq-a">Tu laptop necesita estar encendida y Claude Desktop abierto cuando la tarea se dispara. Si tu máquina estaba en sleep, corre cuando la despiertes. Revisá la configuración en <code>tareas-cowork/daily-morning-briefing.md</code>.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function toggleStep(h) { h.parentElement.classList.toggle('open'); }
+function toggleFaq(q) { q.parentElement.classList.toggle('open'); }
+
+function copy(btn) {
+  const t = btn.parentElement.querySelector('.cb-t').textContent;
+  navigator.clipboard.writeText(t).then(() => {
+    btn.textContent = '¡Copiado!';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 2000);
+  });
+}
+
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+menuBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('on');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('on');
+});
+document.querySelectorAll('.nav-a').forEach(a => {
+  a.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('on');
+  });
+});
+
+// Active nav on scroll
+const ids = ['inicio','paso-1','paso-2','paso-3','paso-4','paso-5','paso-6','paso-7','paso-8','paso-9','paso-10','paso-11','paso-12','briefing','skills-det','todos','subagentes','consejos','errores','faq'];
+const links = document.querySelectorAll('.nav-a');
+
+window.addEventListener('scroll', () => {
+  const y = window.scrollY + 100;
+  let cur = ids[0];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= y) cur = id;
+  });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
