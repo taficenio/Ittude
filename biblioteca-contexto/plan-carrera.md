@@ -22,7 +22,7 @@ Product Management en sentido amplio — no específicamente "AI Product Manager
 
 ## Mercado Objetivo
 
-Argentina, LatAm, USA, Canadá, e incluso Europa. Mercado amplio — prioriza roles remotos que puedan contratar desde Argentina o LatAm en general.
+**[ACTUALIZADO 2026-08-12]** Argentina, LatAm, USA y Canadá. **Se excluyó Europa/EMEA y cualquier otra geografía** (APAC, etc.) — confirmado por el usuario. Filtro duro: solo considerar roles cuya elegibilidad remota explícitamente incluya LatAm (o Argentina específicamente), en empresas de USA, Canadá o LatAm. Un rol remoto restringido a EMEA (aunque la empresa sea excelente) se descarta directamente, sin necesidad de verificar elegibilidad caso por caso — ya se sabe que no aplica.
 
 ## Preferencia de Empresas Objetivo
 
