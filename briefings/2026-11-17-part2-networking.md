@@ -44,6 +44,10 @@ Mix por empresa (para que la asignación de arriba funcione sin ajustes):
 - 1 PM un nivel arriba (Group PM, Director — posible hiring manager)
 - 1 persona de función adyacente (Eng Manager, Design Lead) o reclutador/a regional
 
+### Nota de continuidad — reactivación en Amazon/Apple/Google/Salesforce/Atlassian
+
+Estas 5 empresas también son gap (3, 2, 2, 2 y 1 conexiones respectivamente), pero a diferencia de las 8 de arriba sí tienen contactos reales ya existentes en `rastreador-conexiones.md` (ej. Alejandro Medici y OGHENETEJIRI Atebefia en Amazon, Pablo Perez y jason cohen en Apple, Gabriel Sleiman en Google, Melina Ruggeri en Salesforce, Carlos Amilcar Sanchez Rosa en Atlassian). Las corridas anteriores (ver `briefings/2026-11-16-part2-networking.md`) ya redactaron mensajes de reactivación de 15 minutos para ellos — son reales, no inventados, y siguen siendo la acción correcta. No se regeneran acá para no duplicar contenido: **si todavía no se enviaron, son la acción de hoy**, junto con los 6 pedidos de referido de la sección de abajo.
+
 ### Networking virtual de esta semana (MODO REMOTO)
 
 Unirte a **Product School Slack** y a la **comunidad de Lenny (Lenny's Newsletter community)**, y comentar en 2-3 threads relevantes sobre PM/producto esta semana. Esto no reemplaza el outreach 1:1 de arriba, pero es la acción de red remota de menor fricción disponible hoy sin depender de datos de LinkedIn.
